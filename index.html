@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Can Tipping Simulator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        #container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-top: 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        #canvas-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        #controls {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+        }
+        
+        .control-group {
+            margin-bottom: 25px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .control-group input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+        }
+        
+        .control-group input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4CAF50;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .value-display {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 8px;
+        }
+        
+        .toggle-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .toggle-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .can-selector {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .can-button {
+            flex: 1;
+            padding: 15px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .can-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .can-button.active {
+            background: rgba(76, 175, 80, 0.5);
+            border-color: #4CAF50;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+        }
+        
+        #info-panel {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .warning {
+            background: rgba(255, 0, 0, 0.3);
+            border-left: 4px solid #ff0000;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        
+        .optimal {
+            background: rgba(76, 175, 80, 0.3);
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>🥫 Can Tipping Physics Simulator</h1>
+        <div id="canvas-container"></div>
+        
+        <div id="controls">
+            <div class="control-group">
+                <label>Can Type</label>
+                <div class="can-selector">
+                    <button class="can-button active" onclick="selectCan('redbull')">Red Bull</button>
+                    <button class="can-button" onclick="selectCan('monster')">Monster</button>
+                    <button class="can-button" onclick="selectCan('cola')">Coca-Cola</button>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label>Fill Level: <span class="value-display" id="fill-value">100%</span></label>
+                <input type="range" id="fill-slider" min="0" max="100" value="100" step="1">
+            </div>
+            
+            <div class="control-group">
+                <label>Horizontal Force (Train Acceleration): <span class="value-display" id="force-value">5.0 m/s²</span></label>
+                <input type="range" id="force-slider" min="0" max="20" value="5" step="0.1">
+            </div>
+            
+            <div class="control-group">
+                <label>Can Height: <span class="value-display" id="height-value">168 mm</span></label>
+                <input type="range" id="height-slider" min="100" max="250" value="168" step="1">
+            </div>
+            
+            <div class="control-group">
+                <label>Can Radius: <span class="value-display" id="radius-value">32 mm</span></label>
+                <input type="range" id="radius-slider" min="25" max="50" value="32" step="1">
+            </div>
+            
+            <div class="control-group">
+                <label>Empty Can Mass: <span class="value-display" id="mass-value">15 g</span></label>
+                <input type="range" id="mass-slider" min="10" max="30" value="15" step="1">
+            </div>
+            
+            <div class="control-group">
+                <label>Display Options</label>
+                <div class="toggle-group">
+                    <div class="toggle-item">
+                        <input type="checkbox" id="show-com" checked>
+                        <label for="show-com">Center of Mass</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="show-force" checked>
+                        <label for="show-force">Force Vectors</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="show-pivot" checked>
+                        <label for="show-pivot">Pivot Point</label>
+                    </div>
+                    <div class="toggle-item">
+                        <input type="checkbox" id="show-graph" checked>
+                        <label for="show-graph">Stability Graph</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="info-panel">
+            <h2 style="margin-top: 0;">📊 Physics Analysis</h2>
+            <div class="info-row">
+                <span>Center of Mass Height:</span>
+                <span id="com-height">--</span>
+            </div>
+            <div class="info-row">
+                <span>Total Mass:</span>
+                <span id="total-mass">--</span>
+            </div>
+            <div class="info-row">
+                <span>Tipping Angle:</span>
+                <span id="tip-angle">--</span>
+            </div>
+            <div class="info-row">
+                <span>Critical Acceleration:</span>
+                <span id="crit-accel">--</span>
+            </div>
+            <div class="info-row">
+                <span>Stability Factor:</span>
+                <span id="stability-factor">--</span>
+            </div>
+            <div id="status-message"></div>
+        </div>
+    </div>
+    
+    <script src="sketch.js"></script>
+</body>
+</html>
