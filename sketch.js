@@ -406,7 +406,7 @@ function drawForceVectors() {
         noStroke();
         textAlign(LEFT, CENTER);
         textSize(12);
-        text('⚠️ TIPPING!', r + 40, -20);
+        text('TIPPING WARNING', r + 40, -20);
     }
 }
 
@@ -588,14 +588,12 @@ function updateInfoPanel() {
     const statusDiv = document.getElementById('status-message');
     
     if (wouldTip) {
-        statusDiv.innerHTML = '<div class="warning">⚠️ CAN WOULD TIP OVER! Reduce force or adjust fill level.</div>';
+        statusDiv.innerHTML = '<div class="warning"><i class="fa-solid fa-triangle-exclamation icon"></i><span>Can would tip over! Reduce force or adjust fill level.</span></div>';
     } else if (Math.abs(fillLevel - optimalFillLevel) < 5) {
-        statusDiv.innerHTML = '<div class="optimal">✓ Near optimal stability! This fill level maximizes resistance to tipping.</div>';
+        statusDiv.innerHTML = '<div class="optimal"><i class="fa-solid fa-circle-check icon"></i><span>Near optimal stability. This fill level maximizes resistance to tipping.</span></div>';
     } else {
         const direction = fillLevel < optimalFillLevel ? 'add' : 'remove';
         const amount = Math.abs(fillLevel - optimalFillLevel).toFixed(1);
-        statusDiv.innerHTML = `<div style="background: rgba(255, 165, 0, 0.2); border-left: 4px solid orange; padding: 15px; border-radius: 8px; margin-top: 15px;">
-            ℹ️ For maximum stability, ${direction} ${amount}% of liquid to reach ${optimalFillLevel.toFixed(1)}% fill level.
-        </div>`;
+        statusDiv.innerHTML = `<div class="status-tip"><i class="fa-solid fa-lightbulb icon"></i><span>For maximum stability, ${direction} ${amount}% of liquid to reach ${optimalFillLevel.toFixed(1)}% fill level.</span></div>`;
     }
 }
