@@ -76,6 +76,7 @@
             border-radius: 5px;
             background: rgba(255, 255, 255, 0.3);
             outline: none;
+            appearance: none;
             -webkit-appearance: none;
         }
         
@@ -203,9 +204,9 @@
                 <div class="control-group">
                     <label>Can Type</label>
                     <div class="can-selector">
-                        <button class="can-button active" onclick="selectCan('redbull')">Red Bull</button>
-                        <button class="can-button" onclick="selectCan('monster')">Monster</button>
-                        <button class="can-button" onclick="selectCan('cola')">Coca-Cola</button>
+                        <button class="can-button active" data-can="redbull" onclick="selectCan('redbull')">Red Bull</button>
+                        <button class="can-button" data-can="monster" onclick="selectCan('monster')">Monster</button>
+                        <button class="can-button" data-can="cola" onclick="selectCan('cola')">Coca-Cola</button>
                     </div>
                 </div>
                 
