@@ -31,13 +31,28 @@
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
         
-        #canvas-container {
+        #main-section {
             display: flex;
-            justify-content: center;
+            gap: 20px;
             margin: 20px 0;
         }
         
+        #canvas-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
         #controls {
+            flex: 0 0 450px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 25px;
+            height: fit-content;
+        }
+        
+        #graph-section {
             background: rgba(255, 255, 255, 0.15);
             border-radius: 15px;
             padding: 25px;
@@ -180,64 +195,74 @@
 <body>
     <div id="container">
         <h1>🥫 Can Tipping Physics Simulator</h1>
-        <div id="canvas-container"></div>
         
-        <div id="controls">
-            <div class="control-group">
-                <label>Can Type</label>
-                <div class="can-selector">
-                    <button class="can-button active" onclick="selectCan('redbull')">Red Bull</button>
-                    <button class="can-button" onclick="selectCan('monster')">Monster</button>
-                    <button class="can-button" onclick="selectCan('cola')">Coca-Cola</button>
-                </div>
-            </div>
+        <div id="main-section">
+            <div id="canvas-container"></div>
             
-            <div class="control-group">
-                <label>Fill Level: <span class="value-display" id="fill-value">100%</span></label>
-                <input type="range" id="fill-slider" min="0" max="100" value="100" step="1">
-            </div>
-            
-            <div class="control-group">
-                <label>Horizontal Force (Train Acceleration): <span class="value-display" id="force-value">5.0 m/s²</span></label>
-                <input type="range" id="force-slider" min="0" max="20" value="5" step="0.1">
-            </div>
-            
-            <div class="control-group">
-                <label>Can Height: <span class="value-display" id="height-value">168 mm</span></label>
-                <input type="range" id="height-slider" min="100" max="250" value="168" step="1">
-            </div>
-            
-            <div class="control-group">
-                <label>Can Radius: <span class="value-display" id="radius-value">32 mm</span></label>
-                <input type="range" id="radius-slider" min="25" max="50" value="32" step="1">
-            </div>
-            
-            <div class="control-group">
-                <label>Empty Can Mass: <span class="value-display" id="mass-value">15 g</span></label>
-                <input type="range" id="mass-slider" min="10" max="30" value="15" step="1">
-            </div>
-            
-            <div class="control-group">
-                <label>Display Options</label>
-                <div class="toggle-group">
-                    <div class="toggle-item">
-                        <input type="checkbox" id="show-com" checked>
-                        <label for="show-com">Center of Mass</label>
-                    </div>
-                    <div class="toggle-item">
-                        <input type="checkbox" id="show-force" checked>
-                        <label for="show-force">Force Vectors</label>
-                    </div>
-                    <div class="toggle-item">
-                        <input type="checkbox" id="show-pivot" checked>
-                        <label for="show-pivot">Pivot Point</label>
-                    </div>
-                    <div class="toggle-item">
-                        <input type="checkbox" id="show-graph" checked>
-                        <label for="show-graph">Stability Graph</label>
+            <div id="controls">
+                <div class="control-group">
+                    <label>Can Type</label>
+                    <div class="can-selector">
+                        <button class="can-button active" onclick="selectCan('redbull')">Red Bull</button>
+                        <button class="can-button" onclick="selectCan('monster')">Monster</button>
+                        <button class="can-button" onclick="selectCan('cola')">Coca-Cola</button>
                     </div>
                 </div>
+                
+                <div class="control-group">
+                    <label>Fill Level: <span class="value-display" id="fill-value">100%</span></label>
+                    <input type="range" id="fill-slider" min="0" max="100" value="100" step="1">
+                </div>
+                
+                <div class="control-group">
+                    <label>Horizontal Force (Train Acceleration): <span class="value-display" id="force-value">5.0 m/s²</span></label>
+                    <input type="range" id="force-slider" min="0" max="20" value="5" step="0.1">
+                </div>
+                
+                <div class="control-group">
+                    <label>Can Height: <span class="value-display" id="height-value">168 mm</span></label>
+                    <input type="range" id="height-slider" min="100" max="250" value="168" step="1">
+                </div>
+                
+                <div class="control-group">
+                    <label>Can Radius: <span class="value-display" id="radius-value">32 mm</span></label>
+                    <input type="range" id="radius-slider" min="25" max="50" value="32" step="1">
+                </div>
+                
+                <div class="control-group">
+                    <label>Empty Can Mass: <span class="value-display" id="mass-value">15 g</span></label>
+                    <input type="range" id="mass-slider" min="10" max="30" value="15" step="1">
+                </div>
+                
+                <div class="control-group">
+                    <label>Display Options</label>
+                    <div class="toggle-group">
+                        <div class="toggle-item">
+                            <input type="checkbox" id="show-com" checked>
+                            <label for="show-com">Center of Mass</label>
+                        </div>
+                        <div class="toggle-item">
+                            <input type="checkbox" id="show-force" checked>
+                            <label for="show-force">Force Vectors</label>
+                        </div>
+                        <div class="toggle-item">
+                            <input type="checkbox" id="show-pivot" checked>
+                            <label for="show-pivot">Pivot Point</label>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+        
+        <div id="graph-section">
+            <h2 style="margin-top: 0;">📈 Stability Graph</h2>
+            <div class="toggle-group" style="margin-bottom: 15px;">
+                <div class="toggle-item">
+                    <input type="checkbox" id="show-graph" checked>
+                    <label for="show-graph">Show Stability Graph</label>
+                </div>
+            </div>
+            <div id="graph-canvas-container"></div>
         </div>
         
         <div id="info-panel">

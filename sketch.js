@@ -47,6 +47,10 @@ let showGraph = true;
 const g = 9.81; // m/s²
 const SCALE = 2.5; // pixels per mm
 
+// Canvas references
+let mainCanvas;
+let graphCanvas;
+
 // Calculated values
 let centerOfMass;
 let totalMass;
@@ -57,8 +61,12 @@ let wouldTip = false;
 let optimalFillLevel = 0;
 
 function setup() {
-    let canvas = createCanvas(1340, 600);
-    canvas.parent('canvas-container');
+    // Create main canvas for can visualization
+    mainCanvas = createCanvas(700, 600);
+    mainCanvas.parent('canvas-container');
+    
+    // Create graph canvas
+    graphCanvas = createGraphics(1300, 400);
     
     // Set up event listeners
     setupControls();
@@ -78,7 +86,7 @@ function draw() {
     
     // Draw main visualization
     push();
-    translate(300, 500);
+    translate(350, 500);
     drawTable();
     drawCan();
     if (showPivot) drawPivotPoint();
@@ -86,9 +94,14 @@ function draw() {
     if (showForce) drawForceVectors();
     pop();
     
-    // Draw stability graph
+    // Draw stability graph on separate canvas
     if (showGraph) {
         drawStabilityGraph();
+        // Display the graph canvas in the DOM
+        const container = document.getElementById('graph-canvas-container');
+        if (container && !container.querySelector('canvas')) {
+            container.appendChild(graphCanvas.elt);
+        }
     }
     
     // Update info panel
@@ -409,24 +422,21 @@ function drawArrow(x1, y1, x2, y2, label) {
 }
 
 function drawStabilityGraph() {
-    const graphX = 700;
-    const graphY = 50;
-    const graphW = 600;
-    const graphH = 500;
+    const g = graphCanvas;
     
-    // Background
-    fill(255, 255, 255, 230);
-    stroke(100);
-    strokeWeight(2);
-    rect(graphX, graphY, graphW, graphH, 10);
+    g.clear();
+    g.background(255, 255, 255, 230);
+    
+    const graphW = g.width;
+    const graphH = g.height;
     
     // Title
-    fill(0);
-    noStroke();
-    textAlign(CENTER, TOP);
-    textSize(18);
-    textStyle(BOLD);
-    text('Stability Analysis: Critical Acceleration vs Fill Level', graphX + graphW/2, graphY + 10);
+    g.fill(0);
+    g.noStroke();
+    g.textAlign(CENTER, TOP);
+    g.textSize(18);
+    g.textStyle(BOLD);
+    g.text('Stability Analysis: Critical Acceleration vs Fill Level', graphW/2, 10);
     
     // Calculate graph data
     const dataPoints = [];
@@ -450,112 +460,112 @@ function drawStabilityGraph() {
     }
     
     // Draw axes
-    const plotX = graphX + 60;
-    const plotY = graphY + 60;
+    const plotX = 60;
+    const plotY = 60;
     const plotW = graphW - 100;
     const plotH = graphH - 120;
     
-    stroke(0);
-    strokeWeight(2);
-    line(plotX, plotY + plotH, plotX + plotW, plotY + plotH); // x-axis
-    line(plotX, plotY, plotX, plotY + plotH); // y-axis
+    g.stroke(0);
+    g.strokeWeight(2);
+    g.line(plotX, plotY + plotH, plotX + plotW, plotY + plotH); // x-axis
+    g.line(plotX, plotY, plotX, plotY + plotH); // y-axis
     
     // Y-axis label
-    push();
-    translate(plotX - 40, plotY + plotH/2);
-    rotate(-PI/2);
-    fill(0);
-    noStroke();
-    textAlign(CENTER, CENTER);
-    textSize(14);
-    text('Critical Acceleration (m/s²)', 0, 0);
-    pop();
+    g.push();
+    g.translate(plotX - 40, plotY + plotH/2);
+    g.rotate(-PI/2);
+    g.fill(0);
+    g.noStroke();
+    g.textAlign(CENTER, CENTER);
+    g.textSize(14);
+    g.text('Critical Acceleration (m/s²)', 0, 0);
+    g.pop();
     
     // X-axis label
-    fill(0);
-    noStroke();
-    textAlign(CENTER, TOP);
-    text('Fill Level (%)', plotX + plotW/2, plotY + plotH + 30);
+    g.fill(0);
+    g.noStroke();
+    g.textAlign(CENTER, TOP);
+    g.text('Fill Level (%)', plotX + plotW/2, plotY + plotH + 30);
     
     // Y-axis ticks and labels
-    stroke(200);
-    strokeWeight(1);
-    fill(0);
-    noStroke();
-    textAlign(RIGHT, CENTER);
-    textSize(11);
+    g.stroke(200);
+    g.strokeWeight(1);
+    g.fill(0);
+    g.noStroke();
+    g.textAlign(RIGHT, CENTER);
+    g.textSize(11);
     
     for (let i = 0; i <= 5; i++) {
         const y = plotY + plotH - (i / 5) * plotH;
         const val = (i / 5) * maxCrit * 1.1;
         
-        stroke(200);
-        line(plotX, y, plotX + plotW, y);
+        g.stroke(200);
+        g.line(plotX, y, plotX + plotW, y);
         
-        noStroke();
-        text(val.toFixed(1), plotX - 10, y);
+        g.noStroke();
+        g.text(val.toFixed(1), plotX - 10, y);
     }
     
     // X-axis ticks
-    textAlign(CENTER, TOP);
+    g.textAlign(CENTER, TOP);
     for (let i = 0; i <= 10; i++) {
         const x = plotX + (i / 10) * plotW;
         const val = i * 10;
         
-        stroke(200);
-        line(x, plotY + plotH, x, plotY + plotH + 5);
+        g.stroke(200);
+        g.line(x, plotY + plotH, x, plotY + plotH + 5);
         
-        noStroke();
-        text(val, x, plotY + plotH + 10);
+        g.noStroke();
+        g.text(val, x, plotY + plotH + 10);
     }
     
     // Draw curve
-    noFill();
-    stroke(0, 150, 255);
-    strokeWeight(3);
-    beginShape();
+    g.noFill();
+    g.stroke(0, 150, 255);
+    g.strokeWeight(3);
+    g.beginShape();
     for (let point of dataPoints) {
         const x = plotX + (point.fill / 100) * plotW;
         const y = plotY + plotH - (point.critAccel / (maxCrit * 1.1)) * plotH;
-        vertex(x, y);
+        g.vertex(x, y);
     }
-    endShape();
+    g.endShape();
     
     // Draw current fill level line
-    stroke(255, 165, 0);
-    strokeWeight(2);
+    g.stroke(255, 165, 0);
+    g.strokeWeight(2);
     const currentX = plotX + (fillLevel / 100) * plotW;
-    line(currentX, plotY, currentX, plotY + plotH);
+    g.line(currentX, plotY, currentX, plotY + plotH);
     
     // Draw optimal fill level line
-    stroke(0, 200, 0);
-    strokeWeight(2);
-    strokeWeight(2);
+    g.stroke(0, 200, 0);
+    g.strokeWeight(2);
+    g.strokeWeight(2);
     const optimalX = plotX + (optimalFillLevel / 100) * plotW;
-    line(optimalX, plotY, optimalX, plotY + plotH);
+    g.line(optimalX, plotY, optimalX, plotY + plotH);
     
     // Draw current force level line
-    stroke(255, 0, 0, 150);
-    strokeWeight(2);
+    g.stroke(255, 0, 0, 150);
+    g.strokeWeight(2);
     const forceY = plotY + plotH - (horizontalForce / (maxCrit * 1.1)) * plotH;
-    line(plotX, forceY, plotX + plotW, forceY);
+    g.line(plotX, forceY, plotX + plotW, forceY);
     
     // Legend
     const legendY = plotY + plotH - 100;
-    textAlign(LEFT, CENTER);
-    textSize(12);
+    g.textAlign(LEFT, CENTER);
+    g.textSize(12);
     
-    fill(0, 150, 255);
-    text('● Stability Curve', plotX + 20, legendY);
+    g.fill(0, 150, 255);
+    g.text('● Stability Curve', plotX + 20, legendY);
     
-    fill(255, 165, 0);
-    text('│ Current Fill (' + fillLevel.toFixed(0) + '%)', plotX + 20, legendY + 25);
+    g.fill(255, 165, 0);
+    g.text('│ Current Fill (' + fillLevel.toFixed(0) + '%)', plotX + 20, legendY + 25);
     
-    fill(0, 200, 0);
-    text('│ Optimal Fill (' + optimalFillLevel.toFixed(1) + '%)', plotX + 20, legendY + 50);
+    g.fill(0, 200, 0);
+    g.text('│ Optimal Fill (' + optimalFillLevel.toFixed(1) + '%)', plotX + 20, legendY + 50);
     
-    fill(255, 0, 0);
-    text('─ Applied Force (' + horizontalForce.toFixed(1) + ' m/s²)', plotX + 20, legendY + 75);
+    g.fill(255, 0, 0);
+    g.text('─ Applied Force (' + horizontalForce.toFixed(1) + ' m/s²)', plotX + 20, legendY + 75);
 }
 
 function updateInfoPanel() {
