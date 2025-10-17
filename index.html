@@ -147,6 +147,54 @@
             gap: 10px;
         }
 
+        .control-group.can-type-group {
+            padding: 16px 18px 18px;
+        }
+
+        .control-collapsible {
+            width: 100%;
+        }
+
+        .control-collapsible summary {
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05em;
+            color: #e2e8f0;
+        }
+
+        .control-collapsible summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .collapse-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .collapse-indicator i {
+            transition: transform 0.2s ease;
+            color: #94a3b8;
+        }
+
+        .control-collapsible[open] .collapse-indicator i {
+            transform: rotate(180deg);
+            color: #38bdf8;
+        }
+
+        .control-collapsible summary:hover .collapse-label {
+            color: #f8fafc;
+        }
+
+        .control-collapsible[open] .can-selector {
+            margin-top: 16px;
+        }
+
         .control-group label .value-display {
             margin-left: auto;
         }
@@ -423,6 +471,10 @@
                 padding: 16px;
             }
 
+            .control-group.can-type-group {
+                padding: 14px;
+            }
+
             .control-group label {
                 flex-direction: column;
                 align-items: flex-start;
@@ -437,6 +489,10 @@
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 12px;
+            }
+
+            .control-collapsible summary {
+                font-size: 1em;
             }
 
             .can-selector {
@@ -490,22 +546,27 @@
             <div id="canvas-container"></div>
             
             <div id="controls">
-                <div class="control-group">
-                    <label><span><i class="fa-solid fa-box icon"></i>Can Type</span></label>
-                    <div class="can-selector">
-                        <button class="can-button active" data-can="redbull" onclick="selectCan('redbull')">
-                            Red Bull
-                            <span>Energy • 473 ml</span>
-                        </button>
-                        <button class="can-button" data-can="monster" onclick="selectCan('monster')">
-                            Monster
-                            <span>Energy • 500 ml</span>
-                        </button>
-                        <button class="can-button" data-can="cola" onclick="selectCan('cola')">
-                            Coca-Cola
-                            <span>Soda • 355 ml</span>
-                        </button>
-                    </div>
+                <div class="control-group can-type-group">
+                    <details id="can-type-details" class="control-collapsible" open>
+                        <summary>
+                            <span class="collapse-label"><i class="fa-solid fa-box icon"></i>Can Type</span>
+                            <span class="collapse-indicator"><i class="fa-solid fa-chevron-down"></i></span>
+                        </summary>
+                        <div class="can-selector">
+                            <button class="can-button active" data-can="redbull" onclick="selectCan('redbull')">
+                                Red Bull
+                                <span>Energy • 473 ml</span>
+                            </button>
+                            <button class="can-button" data-can="monster" onclick="selectCan('monster')">
+                                Monster
+                                <span>Energy • 500 ml</span>
+                            </button>
+                            <button class="can-button" data-can="cola" onclick="selectCan('cola')">
+                                Coca-Cola
+                                <span>Soda • 355 ml</span>
+                            </button>
+                        </div>
+                    </details>
                 </div>
                 
                 <div class="control-group">

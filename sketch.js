@@ -59,6 +59,7 @@ let baseYPosition = 520;
 let graphCanvasWidth = 1300;
 let graphCanvasHeight = 400;
 let currentScale = SCALE;
+let isMobileLayout = false;
 
 // Calculated values
 let centerOfMass;
@@ -309,6 +310,19 @@ function updateCanvasSizes() {
         graphCanvas.canvas.style.width = '100%';
         graphCanvas.canvas.style.height = 'auto';
         graphCanvas.canvas.style.display = showGraph ? 'block' : 'none';
+    }
+
+    const canTypeDetails = document.getElementById('can-type-details');
+    if (canTypeDetails) {
+        const mobileLayout = windowWidth <= 768;
+        if (mobileLayout !== isMobileLayout) {
+            isMobileLayout = mobileLayout;
+            if (mobileLayout) {
+                canTypeDetails.removeAttribute('open');
+            } else {
+                canTypeDetails.setAttribute('open', '');
+            }
+        }
     }
 }
 
