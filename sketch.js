@@ -51,6 +51,15 @@ const SCALE = 2.5; // pixels per mm
 let mainCanvas;
 let graphCanvas;
 
+// Responsive canvas sizing
+let mainCanvasWidth = 700;
+let mainCanvasHeight = 600;
+let baseOffset = 80;
+let baseYPosition = 520;
+let graphCanvasWidth = 1300;
+let graphCanvasHeight = 400;
+let currentScale = SCALE;
+
 // Calculated values
 let centerOfMass;
 let totalMass;
@@ -62,11 +71,11 @@ let optimalFillLevel = 0;
 
 function setup() {
     // Create main canvas for can visualization
-    mainCanvas = createCanvas(700, 600);
+    mainCanvas = createCanvas(mainCanvasWidth, mainCanvasHeight);
     mainCanvas.parent('canvas-container');
     
     // Create graph canvas
-    graphCanvas = createGraphics(1300, 400);
+    graphCanvas = createGraphics(graphCanvasWidth, graphCanvasHeight);
     const graphContainer = document.getElementById('graph-canvas-container');
     if (graphContainer) {
         graphContainer.innerHTML = '';
@@ -84,6 +93,7 @@ function setup() {
     
     // Initial calculation
     updatePhysics();
+    updateCanvasSizes();
 }
 
 function draw() {
@@ -91,10 +101,14 @@ function draw() {
     
     // Update physics
     updatePhysics();
+    baseYPosition = mainCanvasHeight - baseOffset;
+    const maxHeightScale = (baseYPosition - 60) / canHeight;
+    const maxWidthScale = (mainCanvasWidth * 0.42) / canRadius;
+    currentScale = Math.max(0.6, Math.min(SCALE, maxHeightScale, maxWidthScale));
     
     // Draw main visualization
     push();
-    translate(350, 500);
+    translate(mainCanvasWidth / 2, baseYPosition);
     drawTable();
     drawCan();
     if (showPivot) drawPivotPoint();
@@ -170,6 +184,10 @@ function setupControls() {
         if (graphCanvas && graphCanvas.canvas) {
             graphCanvas.canvas.style.display = showGraph ? 'block' : 'none';
         }
+        if (showGraph) {
+            drawStabilityGraph();
+        }
+        updateCanvasSizes();
     });
 }
 
@@ -259,21 +277,58 @@ function calculateOptimalFillLevel() {
     optimalFillLevel = bestFill;
 }
 
+function updateCanvasSizes() {
+    const canvasContainer = document.getElementById('canvas-container');
+    let availableWidth = windowWidth - 80;
+    if (canvasContainer) {
+        const containerWidth = canvasContainer.clientWidth;
+        availableWidth = containerWidth > 0 ? containerWidth : availableWidth;
+    }
+    const viewportWidthTarget = Math.max(240, windowWidth - 32);
+    availableWidth = Math.min(availableWidth, viewportWidthTarget);
+    availableWidth = Math.max(240, availableWidth);
+    mainCanvasWidth = Math.min(700, availableWidth);
+    mainCanvasHeight = windowWidth < 768 ? 520 : 600;
+    baseOffset = windowWidth < 768 ? 60 : 80;
+    baseYPosition = mainCanvasHeight - baseOffset;
+
+    resizeCanvas(mainCanvasWidth, mainCanvasHeight);
+    if (mainCanvas && mainCanvas.elt) {
+        mainCanvas.elt.style.width = '100%';
+        mainCanvas.elt.style.height = 'auto';
+    }
+
+    const graphContainer = document.getElementById('graph-canvas-container');
+    if (graphContainer && graphCanvas) {
+        let graphAvailableWidth = graphContainer.clientWidth ? graphContainer.clientWidth : availableWidth;
+        graphAvailableWidth = Math.min(graphAvailableWidth, viewportWidthTarget);
+    graphAvailableWidth = Math.max(240, graphAvailableWidth);
+        graphCanvasWidth = Math.min(1300, graphAvailableWidth);
+        graphCanvasHeight = windowWidth < 768 ? 340 : 400;
+        graphCanvas.resizeCanvas(graphCanvasWidth, graphCanvasHeight);
+        graphCanvas.canvas.style.width = '100%';
+        graphCanvas.canvas.style.height = 'auto';
+        graphCanvas.canvas.style.display = showGraph ? 'block' : 'none';
+    }
+}
+
 function drawTable() {
     // Draw table surface
     stroke(80);
     strokeWeight(4);
-    line(-200, 0, 400, 0);
+    const halfSpan = mainCanvasWidth * 0.48;
+    line(-halfSpan, 0, halfSpan, 0);
     
     // Hatch marks to show infinite friction
-    for (let x = -200; x <= 400; x += 20) {
-        line(x, 0, x - 10, 10);
+    const spacing = 18;
+    for (let x = -halfSpan; x <= halfSpan; x += spacing) {
+        line(x, 0, x - spacing * 0.45, Math.min(12, spacing * 0.65));
     }
 }
 
 function drawCan() {
-    const h = canHeight * SCALE;
-    const r = canRadius * SCALE;
+    const h = canHeight * currentScale;
+    const r = canRadius * currentScale;
     const liquidH = (fillLevel / 100) * h;
     
     // Get colors
@@ -307,20 +362,20 @@ function drawCan() {
     fill(255);
     noStroke();
     textAlign(CENTER, CENTER);
-    textSize(16);
+    textSize(constrain(16 * currentScale / SCALE, 12, 20));
     textStyle(BOLD);
     text(spec.name, 0, -h * 0.6);
     
     // Draw percentage if not full
     if (fillLevel < 100) {
-        textSize(20);
+        textSize(constrain(20 * currentScale / SCALE, 14, 24));
         fill(255, 255, 0);
         text(fillLevel.toFixed(0) + '%', 0, -h * 0.4);
     }
 }
 
 function drawCenterOfMass() {
-    const comY = -centerOfMass * SCALE;
+    const comY = -centerOfMass * currentScale;
     
     // Draw COM indicator
     fill(255, 0, 0);
@@ -344,14 +399,14 @@ function drawCenterOfMass() {
     // Draw horizontal line to edge
     stroke(255, 0, 0, 100);
     strokeWeight(1);
-    const r = canRadius * SCALE;
+    const r = canRadius * currentScale;
     line(0, comY, r, comY);
     line(0, comY, r, 0);
 }
 
 function drawPivotPoint() {
     // Draw the pivot point (edge of can base)
-    const r = canRadius * SCALE;
+    const r = canRadius * currentScale;
     
     fill(255, 165, 0);
     stroke(255);
@@ -371,14 +426,14 @@ function drawPivotPoint() {
 }
 
 function drawForceVectors() {
-    const h = canHeight * SCALE;
-    const comY = -centerOfMass * SCALE;
+    const comY = -centerOfMass * currentScale;
     
     // Scale factor for force arrows
     const forceScale = 10;
     
     // Draw horizontal force (train acceleration)
-    const horizontalLength = horizontalForce * forceScale;
+    const maxHorizontal = mainCanvasWidth * 0.45;
+    const horizontalLength = constrain(horizontalForce * forceScale, -maxHorizontal, maxHorizontal);
     stroke(0, 100, 255);
     strokeWeight(4);
     fill(0, 100, 255);
@@ -399,10 +454,10 @@ function drawForceVectors() {
         stroke(255, 0, 0);
         strokeWeight(2);
         noFill();
-        const r = canRadius * SCALE;
+        const r = canRadius * currentScale;
         arc(r, 0, 60, 60, -PI/2, -PI/2 + tippingAngle);
         // draw indicator line to highlight tipping angle boundary
-        const labelRadius = r + 35;
+    const labelRadius = r + Math.min(60, mainCanvasWidth * 0.12);
         const angleMid = -PI/2 + tippingAngle / 2;
         const labelX = r + cos(angleMid) * labelRadius;
         const labelY = sin(angleMid) * labelRadius;
@@ -520,12 +575,12 @@ function drawStabilityGraph() {
     for (let i = 0; i <= 5; i++) {
         const y = plotY + plotH - (i / 5) * plotH;
         const val = (i / 5) * maxCrit * 1.1;
-        
-    gc.stroke(200);
-    gc.line(plotX, y, plotX + plotW, y);
-        
-    gc.noStroke();
-    gc.text(val.toFixed(1), plotX - 10, y);
+
+        gc.stroke(200);
+        gc.line(plotX, y, plotX + plotW, y);
+
+        gc.noStroke();
+        gc.text(val.toFixed(1), plotX - 10, y);
     }
     
     // X-axis ticks
@@ -533,12 +588,12 @@ function drawStabilityGraph() {
     for (let i = 0; i <= 10; i++) {
         const x = plotX + (i / 10) * plotW;
         const val = i * 10;
-        
-    gc.stroke(200);
-    gc.line(x, plotY + plotH, x, plotY + plotH + 5);
-        
-    gc.noStroke();
-    gc.text(val, x, plotY + plotH + 10);
+
+        gc.stroke(200);
+        gc.line(x, plotY + plotH, x, plotY + plotH + 5);
+
+        gc.noStroke();
+        gc.text(val, x, plotY + plotH + 10);
     }
     
     // Draw curve
@@ -600,7 +655,7 @@ function updateInfoPanel() {
     const statusDiv = document.getElementById('status-message');
     
     if (wouldTip) {
-        statusDiv.innerHTML = '<div class="warning"><i class="fa-solid fa-triangle-exclamation icon"></i><span>Can would tip over! Reduce force or adjust fill level.</span></div>';
+        statusDiv.innerHTML = '<div class="warning"><span class="warning-icon">⚠️</span><span>Can would tip over! Reduce force or adjust fill level.</span></div>';
     } else if (Math.abs(fillLevel - optimalFillLevel) < 5) {
         statusDiv.innerHTML = '<div class="optimal"><i class="fa-solid fa-circle-check icon"></i><span>Near optimal stability. This fill level maximizes resistance to tipping.</span></div>';
     } else {
@@ -608,4 +663,8 @@ function updateInfoPanel() {
         const amount = Math.abs(fillLevel - optimalFillLevel).toFixed(1);
         statusDiv.innerHTML = `<div class="status-tip"><i class="fa-solid fa-lightbulb icon"></i><span>For maximum stability, ${direction} ${amount}% of liquid to reach ${optimalFillLevel.toFixed(1)}% fill level.</span></div>`;
     }
+}
+
+function windowResized() {
+    updateCanvasSizes();
 }

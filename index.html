@@ -88,6 +88,8 @@
             border-radius: 22px;
             border: 1px solid rgba(148, 163, 184, 0.12);
             box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.1);
+            width: 100%;
+            overflow: hidden;
         }
         
         #controls {
@@ -108,6 +110,17 @@
             padding: 28px;
             margin-top: 30px;
             box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.08);
+        }
+
+        #graph-canvas-container {
+            width: 100%;
+        }
+
+        #canvas-container canvas,
+        #graph-canvas-container canvas {
+            width: 100% !important;
+            height: auto !important;
+            display: block;
         }
         
         .control-group {
@@ -342,14 +355,13 @@
             gap: 12px;
             color: #bfdbfe;
         }
+            .warning-icon {
+                font-size: 1.25em;
+                line-height: 1;
+            }
 
-        .status-tip {
-            background: rgba(56, 189, 248, 0.12);
-            border: 1px solid rgba(56, 189, 248, 0.28);
-            padding: 18px 20px;
-            border-radius: 16px;
-            margin-top: 20px;
-            font-weight: 500;
+            .optimal .icon,
+            .status-tip .icon {
             color: #bae6fd;
             display: flex;
             align-items: flex-start;
@@ -362,6 +374,78 @@
         .status-tip .icon {
             font-size: 1.1em;
             margin-top: 2px;
+        }
+
+        @media (max-width: 1100px) {
+            body {
+                padding: 28px 16px;
+            }
+
+            #container {
+                padding: 32px 28px;
+            }
+
+            #main-section {
+                grid-template-columns: 1fr;
+            }
+
+            #canvas-container {
+                padding: 20px;
+            }
+
+            #controls {
+                width: 100%;
+            }
+
+            #graph-section {
+                margin-top: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 20px 12px;
+            }
+
+            #container {
+                padding: 26px 20px;
+            }
+
+            h1 {
+                font-size: 1.9em;
+            }
+
+            #canvas-container {
+                padding: 16px;
+            }
+
+            .control-group {
+                padding: 16px;
+            }
+
+            .control-group label {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .control-group label .value-display {
+                margin-left: 0;
+            }
+
+            .toggle-group {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .can-selector {
+                grid-template-columns: 1fr;
+            }
+
+            .formula-list {
+                gap: 14px;
+            }
         }
 
         .formula-list {
