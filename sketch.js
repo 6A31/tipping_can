@@ -401,6 +401,18 @@ function drawForceVectors() {
         noFill();
         const r = canRadius * SCALE;
         arc(r, 0, 60, 60, -PI/2, -PI/2 + tippingAngle);
+        // draw indicator line to highlight tipping angle boundary
+        const labelRadius = r + 35;
+        const angleMid = -PI/2 + tippingAngle / 2;
+        const labelX = r + cos(angleMid) * labelRadius;
+        const labelY = sin(angleMid) * labelRadius;
+        stroke(255, 0, 0);
+        line(r, 0, labelX, labelY);
+        noStroke();
+        fill(255, 170, 170);
+        textAlign(LEFT, CENTER);
+        textSize(12);
+        text('Critical tip angle', labelX + 8, labelY);
         
         fill(255, 0, 0);
         noStroke();

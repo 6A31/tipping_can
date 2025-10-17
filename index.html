@@ -10,12 +10,42 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
+        html {
+            background-color: #020617;
+        }
+
         body {
             margin: 0;
             padding: 40px 20px;
             font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
             background: radial-gradient(circle at top left, #1f2937, #0f172a 50%, #020617);
             color: #e2e8f0;
+            min-height: 100vh;
+            overflow-y: overlay;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Scrollbar styling */
+        body::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        body::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 999px;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, rgba(56, 189, 248, 0.75), rgba(14, 165, 233, 0.75));
+            border-radius: 999px;
+            border: 2px solid rgba(15, 23, 42, 0.6);
+        }
+
+        body::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, rgba(56, 189, 248, 0.95), rgba(14, 165, 233, 0.95));
         }
         
         #container {
@@ -295,6 +325,10 @@
             gap: 12px;
             color: #fecaca;
         }
+
+        .warning span:first-child {
+            font-size: 1.25em;
+        }
         
         .optimal {
             background: rgba(96, 165, 250, 0.18);
@@ -322,6 +356,7 @@
             gap: 12px;
         }
 
+        .warning span,
         .warning .icon,
         .optimal .icon,
         .status-tip .icon {
