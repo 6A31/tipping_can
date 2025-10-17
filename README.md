@@ -1,4 +1,4 @@
-# ⚠️ AI-Assisted Can Tipping Simulator
+# Can Tipping Simulator
 
 > **Disclaimer:** This simulation and its documentation were created with assistance from an AI coding agent. 
 
