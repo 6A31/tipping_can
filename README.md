@@ -4,7 +4,7 @@
 
 ## Embark on the Scenario
 
-Have you ever been sitting on a train, a freshly opened energy drink on the table, and wondered, *"How much can I sip before this thing topples when the train lurches?"* This project dives into that exact moment, simulating how different beverage fill levels change a can's resistance to side forces.
+Have you ever been sitting on a train, a freshly opened energy drink on the table, shaking back and forth, and wondered, *"How much do I have to sip for this thing to become most resistant to the train’s lurches?"* This project dives into that exact moment, simulating how different beverage fill levels change a can's resistance to side forces.
 
 > **Showcase:** A preview of the simulator is hosted at [https://tipping-can.6A31.com](https://tipping-can.6A31.com).
 
