@@ -8,9 +8,13 @@ Have you ever been sitting on a train, a freshly opened energy drink on the tabl
 
 > **Showcase:** A preview of the simulator is hosted at [https://tipping-can.6A31.com](https://tipping-can.6A31.com).
 
-<img width="744" height="790" alt="can simulation" src="https://github.com/user-attachments/assets/2fdf86bd-a6aa-470c-ae10-349564ebec10" />
-<img width="838" height="499" alt="grafik" src="https://github.com/user-attachments/assets/dcfa7f48-01bf-4bd1-87f5-4c432b27f70e" />
-<img width="484" height="515" alt="grafik" src="https://github.com/user-attachments/assets/27115f3f-3b89-4ab6-9335-2d620cd40790" />
+<p align="center">
+	<img src="https://github.com/user-attachments/assets/2fdf86bd-a6aa-470c-ae10-349564ebec10" alt="Simulation overview screenshot" width="520" />
+</p>
+<p align="center">
+	<img src="https://github.com/user-attachments/assets/dcfa7f48-01bf-4bd1-87f5-4c432b27f70e" alt="Stability graph view" width="360" />
+	<img src="https://github.com/user-attachments/assets/27115f3f-3b89-4ab6-9335-2d620cd40790" alt="Mobile layout" width="320" />
+</p>
 
 
 ---
