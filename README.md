@@ -69,6 +69,6 @@ The simulator visualizes each of these elements so you can *see* exactly why cer
 
 ## Feedback & Contributions
 
-Issues and ideas are welcome—submit a pull request or open an issue describing the improvement you have in mind. Whether you want to add more beverage presets, extend the physics, or polish the visuals, your contributions are appreciated.
+Issues and ideas are welcome, submit a pull request or open an issue describing the improvement you have in mind. Whether you want to add more beverage presets, extend the physics, or polish the visuals, your contributions are appreciated.
 
 Enjoy experimenting, and keep those drinks upright! 🍾
