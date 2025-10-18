@@ -6,7 +6,7 @@
 
 Have you ever been sitting on a train, a freshly opened energy drink on the table, and wondered, *"How much can I sip before this thing topples when the train lurches?"* This project dives into that exact moment, simulating how different beverage fill levels change a can's resistance to side forces.
 
-> **Showcase:** A PC-only preview of the simulator is hosted at [https://tipping-can.6A31.com](https://tipping-can.6A31.com).
+> **Showcase:** A preview of the simulator is hosted at [https://tipping-can.6A31.com](https://tipping-can.6A31.com).
 
 ---
 
@@ -34,8 +34,6 @@ python3 -m http.server 8000
 ```
 
 Then open your browser to `http://localhost:8000` and enjoy tipping cans without the sticky cleanup.
-
-> **Tip:** Because the UI targets desktop browsers, use a reasonably wide window for the best layout.
 
 ---
 
